@@ -4,6 +4,11 @@
   "description": "Enables text on a website to be truncated over multiple lines which is not widely supported in CSS natively.",
   "main": "src/index.js",
   "scripts": {
+    "build-all": "NODE_ENV=production npm run build && npm run build-min",
+    "build": "npx babel src/index.js --out-file dist/multiline-clamp.js --source-maps",
+    "build-min": "npx minify dist/multiline-clamp.js --outFile dist/multiline-clamp.min.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "dist": "npm run clean && npm run build-all",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,7 +29,13 @@
   },
   "homepage": "https://github.com/cshawaus/multiline-clamp",
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
+    "@babel/preset-env": "^7.0.0-beta.42",
+    "@babel/preset-stage-0": "^7.0.0-beta.42",
     "babel-eslint": "^8.2.2",
+    "babel-minify": "^0.3.0",
+    "babel-preset-minify": "^0.3.0",
     "eslint": "^4.19.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-babel": "^4.1.2",

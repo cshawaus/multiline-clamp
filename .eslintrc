@@ -13,6 +13,8 @@
     "babel"
   ],
   "rules": {
+    "class-methods-use-this": "off",
+    "key-spacing": "off",
     "no-console": "off",
     "no-param-reassign": "off",
     "semi": "off"
