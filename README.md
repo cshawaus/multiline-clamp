@@ -4,7 +4,7 @@ Even in the modern age of browsers, technologies and API's alike; we still don't
 Looking around the web I found a couple of decent libraries but nothing that has decent breakpoint support out-of-the-box.
 
 ## So How Does It Work?
-Good question!
+_Good question!_
 
 Rather than calculating positions, widths etc., my solution is allowing a developer to specifically define how many characters should be displayed before a clamp is applied. This solution also takes HTML elements into account which can break the clamp entitely, so instead I also allow a configurable regular expression to be defined which automatically strips elements out if they are at the end which has the added benifit of not destroying the original intention of the text.
 
