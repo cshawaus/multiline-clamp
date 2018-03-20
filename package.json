@@ -1,6 +1,6 @@
 {
   "name": "multiline-clamp",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Enables text on a website to be truncated over multiple lines which is not widely supported in CSS natively.",
   "main": "src/index.js",
   "scripts": {
@@ -17,20 +17,19 @@
     "text",
     "responsive"
   ],
-  "author": "Chris Shaw <me@cshaw.xyz> (https://twitter.com/cshawaus)",
+  "author": "Chris Shaw <me@cshaw.xyz> (https://cshaw.xyz)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cshawaus/multiline-clamp/issues"
   },
   "homepage": "https://github.com/cshawaus/multiline-clamp",
   "devDependencies": {
+    "babel-eslint": "^8.2.2",
     "eslint": "^4.19.0",
     "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0"
-  },
-  "dependencies": {
-    "object-assign": "^4.1.1"
   }
 }

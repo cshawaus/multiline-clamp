@@ -13,7 +13,7 @@ I don't claim to have 100% browser support but if you find an issue please [crea
 
 ![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_32x32.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_32x32.png) | ![IE/Edge](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_32x32.png) | ![Opera](https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_32x32.png) | ![Safari](https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_32x32.png)
 --- | --- | --- | --- | --- |
-Latest | Latest | 9+ | Latest | 8+ |
+Latest | Latest | 10+ | Latest | 8+ |
 
 ## Installation
 Coming soon!

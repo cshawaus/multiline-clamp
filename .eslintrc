@@ -4,7 +4,17 @@
     "document": true,
     "window": true
   },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "babel"
+  ],
   "rules": {
+    "no-console": "off",
+    "no-param-reassign": "off",
     "semi": "off"
   }
 }
