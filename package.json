@@ -1,6 +1,6 @@
 {
   "name": "multiline-clamp",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Enables text on a website to be truncated over multiple lines which is not widely supported in CSS natively.",
   "main": "./src/index.js",
   "scripts": {
