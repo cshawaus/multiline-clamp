@@ -1,5 +1,5 @@
 /*!
- * multiline-clamp v1.0.3
+ * multiline-clamp v1.1.0
  * © 2018 by Chris Shaw
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -111,9 +111,15 @@ var defaultOptions = {
   clampSize: 72,
 
   /**
-                  * Allows an object of clamps to be defined for different breakpoints.
-                  * @type {Boolean|Object}
+                  * Defines how partial/invalid tags are handled when found in a clamped string.
+                  * @type {String}
                   */
+  partialTags: 'complete',
+
+  /**
+                            * Allows an object of clamps to be defined for different breakpoints.
+                            * @type {Boolean|Object}
+                            */
   responsive: false,
 
   /**
@@ -169,7 +175,7 @@ function bindResizeHandler() {
 
     // Start timing for event 'completion'
     resizeTimeout = setTimeout(function () {
-      multilineInstances.forEach(function (instance) {return instance.clamp();});
+      multilineInstances.forEach(function (instance) {return instance.refreshClamp();});
     }, 100);
   });
 }
@@ -224,6 +230,14 @@ function mergeDefaultOptionsWithCustomOverrides(overrides) {
     defaults.clampSize = overrides.clampSize;
   }
 
+  // Partial tags
+  if (
+  typeof overrides.partialTags === 'string' &&
+  /^complete|pull|pull-and-retain$/.test(overrides.partialTags))
+  {
+    defaults.partialTags = overrides.partialTags;
+  }
+
   // Responsive behaviours
   if (overrides.responsive !== false && overrides.responsive instanceof window.Object) {
     var breakpoints = {};var
@@ -269,49 +283,50 @@ function mergeDefaultOptionsWithCustomOverrides(overrides) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _functions = __webpack_require__(/*! ./functions */ "./src/functions.js");function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _functions = __webpack_require__(/*! ./functions */ "./src/functions.js");function _toConsumableArray(arr) {return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();}function _nonIterableSpread() {throw new TypeError("Invalid attempt to spread non-iterable instance");}function _iterableToArray(iter) {if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);}function _arrayWithoutHoles(arr) {if (Array.isArray(arr)) {for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {arr2[i] = arr[i];}return arr2;}}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}
 
 
 
 
 /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * Enables text on a website to be truncated over multiple lines which is not widely
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * supported in CSS natively.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @class MultilineClamp
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */var
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    * Enables text on a website to be truncated over multiple lines which is not widely
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    * supported in CSS natively.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    * @class MultilineClamp
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    */var
 MultilineClamp = /*#__PURE__*/function () {
 
 
   /**
                                             * Constructor for the `MultilineClamp` class.
                                             *
-                                            * @param {HTMLElement} target  An target element to apply a clamp to
-                                            * @param {Object}      options Option overrides
+                                            * @param {HTMLElement|NodeList} targets Target elements to apply a clamp to
+                                            * @param {Object}               options Option overrides
                                             */
-  function MultilineClamp(target) {var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};_classCallCheck(this, MultilineClamp);this.tags = [];
+  function MultilineClamp(targets) {var _this = this;var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};_classCallCheck(this, MultilineClamp);this.storeClampElement = null;
     var extendedOptions = (0, _functions.mergeDefaultOptionsWithCustomOverrides)(options);
+
+    // Bind the options to the instance
     this.options = extendedOptions;
 
-    // Define the target element and original content
-    this.target = target;
-    this.originalContent = target.innerHTML;
+    // Define the target elements
+    this.targets = targets instanceof window.NodeList ? _toConsumableArray(targets) : [targets];
 
-    // Get the target contents
-    var content = this.targetContents;
+    // Set up each target
+    this.targets.forEach(function (target) {
+      // Get the original content for the target
+      if (!target.originalContent) {
+        target.originalContent = _this.getTargetContents(target);
+      }
 
-    // Store the original text in memory (non-persistent between page reloads)
-    if (!target.originalContent) {
-      target.originalContent = content;
-    }
+      // Match all the tags in the target elements content
+      if (extendedOptions.tagsExpression instanceof window.RegExp) {
+        target.tags = target.originalContent.match(extendedOptions.tagsExpression) || [];
+      }
 
-    // Match all the tags in the target elements content
-    if (extendedOptions.tagsExpression instanceof window.RegExp) {
-      this.tags = content.match(extendedOptions.tagsExpression);
-    }
-
-    // Start clamp'n!
-    this.clamp();
+      // Start clamp'n!
+      _this.clamp(target);
+    });
 
     // Register this instance with the resize handler
     (0, _functions.registerInstanceWithResizeHandler)(this);
@@ -321,30 +336,33 @@ MultilineClamp = /*#__PURE__*/function () {
      * Retrieves the contents of the target element and applies any triming to it.
      *
      * @memberof MultilineClamp
-     * @return {String}
-     */_createClass(MultilineClamp, [{ key: "clamp",
+     * @param  {HTMLElement} target A target element to get content for
+     * @return {String}             The parsed contents for the target
+     */_createClass(MultilineClamp, [{ key: "getTargetContents", value: function getTargetContents(
+    target) {
+      var html = target.innerHTML;var
+      trimWhitespace = this.options.trimWhitespace;
 
+      if (trimWhitespace) {
+        if (trimWhitespace instanceof window.RegExp) {
+          html = html.replace(trimWhitespace, '');
+        } else {
+          html = html.trim();
+        }
+      }
 
-
-
-
-
-
-
-
-
-
-
-
-
+      return html;
+    }
 
     /**
-                                                      * Takes the stored content string and removes part of it until the clamp size is reached.
-                                                      *
-                                                      * @memberof MultilineClamp
-                                                      */value: function clamp()
-    {var
-      characterLength = this.characterLength,originalContent = this.originalContent,target = this.target;
+       * Takes the stored content string and removes part of it until the clamp size is reached.
+       *
+       * @memberof MultilineClamp
+       * @param {HTMLElement} target Target element to apply a clamp to
+       */ }, { key: "clamp", value: function clamp(
+    target) {var
+      characterLength = this.characterLength;var
+      originalContent = target.originalContent;
       var content = originalContent;
 
       // If the length of the content doesn't exceed the clamp size simply do nothing!
@@ -355,7 +373,7 @@ MultilineClamp = /*#__PURE__*/function () {
 
       // Let's check all of the tags we have, if any are missing or cut off we need to take
       // the string back to the point where the opening tag begins.
-      var foundTags = this.findTagsInContent();
+      var foundTags = this.findTagsInContent(target);
 
       // If tags are found, clamp the string from the point which a valid tag exists at
       if (foundTags.length) {
@@ -385,14 +403,22 @@ MultilineClamp = /*#__PURE__*/function () {
     }
 
     /**
+       * Re-applies the clamp to each target defined.
+       */ }, { key: "refreshClamp", value: function refreshClamp()
+    {var _this2 = this;
+      this.targets.forEach(function (target) {return _this2.clamp(target);});
+    }
+
+    /**
        * Strips away the content up until the point a tag can't be found in the string.
        *
        * @memberof MultilineClamp
-       * @return {Array} Tags that were found in the substring content
-       */ }, { key: "findTagsInContent", value: function findTagsInContent()
-    {
+       * @param  {HTMLElement} target Target element to apply a clamp to
+       * @return {Array}              Tags that were found in the substring content
+       */ }, { key: "findTagsInContent", value: function findTagsInContent(
+    target) {
       var foundTags = [];var
-      originalContent = this.originalContent,tags = this.tags;
+      originalContent = target.originalContent,tags = target.tags;
 
       var contentClone = originalContent;
       var contentOffset = 0;
@@ -409,7 +435,7 @@ MultilineClamp = /*#__PURE__*/function () {
           // Push the tag into the list
           foundTags.push({
             closing: tag.indexOf('</') !== -1,
-            name: tag,
+            element: tag,
             offset: contentOffset + offset });
 
         }
@@ -427,73 +453,95 @@ MultilineClamp = /*#__PURE__*/function () {
        * @param  {String} content   The freshly clamped content
        * @return {String}           Modified content up until the point of the last found tag
        */ }, { key: "clampFromKnownTags", value: function clampFromKnownTags(
-    foundTags, content) {
-      var clampOffset = content.length;
-      var lastFound = false;
+    foundTags, content) {var
+      partialTags = this.options.partialTags;
+      var newContent = content;
 
       foundTags.forEach(function (tag, index) {
-        if (lastFound) return;
+        var tagLength = tag.element.length;
+        var tagFromContent = content.substr(tag.offset, tagLength);
 
-        var tagLength = tag.name.length;
-        var contentOffset = content.substr(tag.offset, tagLength);
+        if (tagLength !== tagFromContent.length) {
+          var lastTag = foundTags[index - 1];
 
-        if (tagLength !== contentOffset.length) {
-          // Pull the content back to before the previous tag
-          if (tag.closing) {
-            var lastTag = foundTags[index - 1];
-            lastFound = true;
+          switch (partialTags) {
+            case 'pull':
+              // Simply pull the content back to just before the previous tag
+              newContent = newContent.substring(0, lastTag.offset);
+              break;
 
-            clampOffset = lastTag.offset;
+            case 'pull-and-retain':
+              if (tag.closing) {
+                newContent = newContent.substring(0, tag.offset);
 
-            // Otherwise pull the content back to just before this tag
-          } else {
-            clampOffset = tag.offset;
-          }
+                // Grab the last bit of content before the previous tag
+                var contentEnd = newContent.substr(lastTag.offset + lastTag.element.length);
+
+                // Now remove the previous tag from the content and append the original ending back on
+                newContent = newContent.substring(0, lastTag.offset) + contentEnd;
+              }
+              break;
+
+            case 'complete':
+            default:
+              if (tag.closing) {
+                // Fixes the incomplete tag by replacing it with the original element
+                newContent = newContent.substring(0, tag.offset) + tag.element;
+              }
+              break;}
+
         }
       });
 
-      return content.substring(0, clampOffset);
+      return newContent;
     }
 
     /**
-       * Returns the clamp size for the current breakpoint, if responsive clamps aren't enabled the
-       * default clamp size is used instead.
+       * Returns the clamp size for the current breakpoint. If responsive clamps aren't enabled
+       * the default clamp size is used instead.
        *
        * @memberof MultilineClamp
-       * @return {Number}
-       */ }, { key: "targetContents", get: function get() {var html = this.target.innerHTML;var trimWhitespace = this.options.trimWhitespace;if (trimWhitespace) {if (trimWhitespace instanceof window.RegExp) {html = html.replace(trimWhitespace, '');} else {html = html.trim();}}return html;} }, { key: "characterLength", get: function get()
-    {var
-      responsive = this.options.responsive;
+       * @return {Number} The clamp size to contain the content to
+       */ }, { key: "characterLength", get: function get()
+    {var _options =
+      this.options,clampSize = _options.clampSize,responsive = _options.responsive;
       var windowWidth = window.innerWidth;
 
-      var clampSize;
+      var size;
       if (responsive instanceof window.Object) {
         Object.keys(responsive).forEach(function (breakpoint) {
-          if (windowWidth <= breakpoint && !clampSize) {
-            clampSize = responsive[breakpoint];
+          if (windowWidth <= breakpoint && !size) {
+            size = responsive[breakpoint];
           }
         });
       }
 
-      return clampSize || this.options.clampSize;
+      return size || clampSize;
     }
 
     /**
        * Builds the clamp element that is appended to the end of the content.
        *
        * @memberof MultilineClamp
-       * @return {HTMLElement}
+       * @return {HTMLElement} The DOM element for the clamp
        */ }, { key: "clampElement", get: function get()
-    {var
+    {
+      // If the clamp already exists, use the stored version and clone it
+      if (this.storedClampElement) {
+        return this.storedClampElement.cloneNode(true);
+      }var
+
       clamp = this.options.clamp;
+      var clampElement = clamp;
 
-      // If the clamp element is already an `HTMLElement`, simply return it
-      if (clamp instanceof window.HTMLElement) return clamp;
+      // Create a new `span` element to wrap the clamp text within if the given element is a string
+      if (!(clampElement instanceof window.HTMLElement)) {
+        clampElement = document.createElement('span');
+        clampElement.appendChild(document.createTextNode(clamp));
+      }
 
-      // Create a new `span` element to wrap the clamp text within
-      var clampElement = document.createElement('span');
-      clampElement.appendChild(document.createTextNode(clamp));
-
+      // Cache the element away so we don't have to re-generate it again
+      this.storedClampElement = clampElement;
       return clampElement;
     } }]);return MultilineClamp;}();var _default =
 
