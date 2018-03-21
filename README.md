@@ -1,6 +1,7 @@
 # Multiline Clamp
 
 [![gzipped size][badge-gzip]](#no-link) [![build status][badge-travis]][link-travis] [![npm][badge-version]][link-npm] [![jsDelivr][badge-jsdelivr]][link-jsdelivr]
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_shield)
 
 [badge-gzip]: https://badges.herokuapp.com/size/github/cshawaus/multiline-clamp/master/dist/multiline-clamp.min.js?gzip=true&label=gzipped%20size
 [badge-travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
@@ -144,3 +145,6 @@ Defines whether the whitespace before/after the content should be stripped out. 
 ## License
 
 MIT
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_large)
