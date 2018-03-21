@@ -170,7 +170,7 @@ function bindResizeHandler() {
     // Start timing for event 'completion'
     resizeTimeout = setTimeout(function () {
       multilineInstances.forEach(function (instance) {return instance.clamp();});
-    }, 250);
+    }, 100);
   });
 }
 
@@ -350,11 +350,6 @@ MultilineClamp = /*#__PURE__*/function () {
       // If the length of the content doesn't exceed the clamp size simply do nothing!
       if (content.length <= characterLength) return;
 
-      // Restore the target contents to its original value
-      if (target.html !== originalContent) {
-        target.html = originalContent;
-      }
-
       // Clamp the content
       content = content.substring(0, characterLength).trim();
 
@@ -378,14 +373,13 @@ MultilineClamp = /*#__PURE__*/function () {
       while (--count >= 0 && !cleaned) {
         character = content[count];
 
-        if (/(\w|\d)/i.test(character)) {
+        if (character === '>' || /(\w|\d)/i.test(character)) {
           content = content.substring(0, count + 1);
           cleaned = true;
         }
       }
 
       // Update the contents for the target element
-      console.log(content);
       target.innerHTML = content;
       target.appendChild(this.clampElement);
     }
@@ -475,7 +469,7 @@ MultilineClamp = /*#__PURE__*/function () {
       var clampSize;
       if (responsive instanceof window.Object) {
         Object.keys(responsive).forEach(function (breakpoint) {
-          if (windowWidth >= breakpoint && !clampSize) {
+          if (windowWidth <= breakpoint && !clampSize) {
             clampSize = responsive[breakpoint];
           }
         });
