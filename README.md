@@ -145,7 +145,7 @@ MIT
 
 [gzip]: https://badges.herokuapp.com/size/github/cshawaus/multiline-clamp/master/dist/multiline-clamp.min.js?gzip=true&label=gzipped%20size
 
-[license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=rounded
 [license-url]: https://github.com/cshawaus/multiline-clamp/blob/master/LICENSE
 
 [travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
