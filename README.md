@@ -1,15 +1,12 @@
 # Multiline Clamp
 
-[![gzipped size][badge-gzip]](#no-link) [![build status][badge-travis]][link-travis] [![npm][badge-version]][link-npm] [![jsDelivr][badge-jsdelivr]][link-jsdelivr]
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_shield)
-
-[badge-gzip]: https://badges.herokuapp.com/size/github/cshawaus/multiline-clamp/master/dist/multiline-clamp.min.js?gzip=true&label=gzipped%20size
-[badge-travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
-[badge-version]: https://img.shields.io/npm/v/multiline-clamp.svg
-[link-travis]: https://travis-ci.org/cshawaus/multiline-clamp
-[link-npm]: https://www.npmjs.com/package/multiline-clamp
-[badge-jsdelivr]: https://data.jsdelivr.com/v1/package/npm/multiline-clamp/badge?style=rounded
-[link-jsdelivr]: https://www.jsdelivr.com/package/npm/multiline-clamp
+[![license][license]][license-url]
+[![fossa][fossa]][fossa-url]
+[![gzipped size][gzip]](#no-link)
+[![dev deps][dev-deps]][dev-deps-url]
+[![build status][travis]][travis-url]
+[![npm][npm]][npm-url]
+[![jsDelivr][jsdelivr]][jsdelivr-url]
 
 Even in the modern age of browsers, technologies and API's alike; we still don't have a full-proof method that enables a designers vision when they show off some cool multiline text with an ellipsis at the end. I needed a solution for a project that not only allowed me to clamp text over multiple lines but also over multiple breakpoints too.
 
@@ -111,7 +108,7 @@ new MultilineClamp(document.querySelector('p'), {
   </tr>
 </table>
 
-### Options
+## Options
 
 ### `clamp`
 `string | element`, defaults to `...`.
@@ -147,4 +144,22 @@ Defines whether the whitespace before/after the content should be stripped out. 
 MIT
 
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_large)
+[gzip]: https://badges.herokuapp.com/size/github/cshawaus/multiline-clamp/master/dist/multiline-clamp.min.js?gzip=true&label=gzipped%20size
+
+[license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=rounded
+[license-url]: https://github.com/cshawaus/multiline-clamp/blob/master/LICENSE
+
+[fossa]: https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=shield
+[fossa-url]: https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_shield
+
+[travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
+[travis-url]: https://travis-ci.org/cshawaus/multiline-clamp
+
+[npm]: https://img.shields.io/npm/v/multiline-clamp.svg
+[npm-url]: https://www.npmjs.com/package/multiline-clamp
+
+[jsdelivr]: https://data.jsdelivr.com/v1/package/npm/multiline-clamp/badge?style=rounded
+[jsdelivr-url]: https://www.jsdelivr.com/package/npm/multiline-clamp
+
+[dev-deps]: https://david-dm.org/cshawaus/multiline-clamp/dev-status.svg?theme=shields.io
+[dev-deps-url]: https://david-dm.org/cshawaus/multiline-clamp?type=dev
