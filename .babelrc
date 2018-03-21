@@ -4,7 +4,12 @@
   "retainLines": true,
 
   "presets": [
-    ["@babel/preset-env"],
-    ["@babel/preset-stage-0"]
+    ["@babel/preset-env", {
+      "useBuiltIns": "entry"
+    }],
+    ["@babel/preset-stage-0", {
+      "loose": true,
+      "useBuiltIns": true
+    }]
   ]
 }
