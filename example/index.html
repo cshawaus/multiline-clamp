@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Multiline Clamp Basic Demo</title>
+</head>
+<body>
+
+  <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus nesciunt debitis aut, explicabo <strong>omnis</strong> id hic voluptatum est, aspernatur, <a href="#">nam</a> aliquid eos molestias dolorem odio recusandae? Repudiandae delectus vitae ullam.</p>
+
+  <script src="../bin/multiline-clamp.js"></script>
+  <script>
+    var instance = new MultilineClamp(document.querySelector('p'), {
+      clampSize: 173,
+
+      responsive: {
+        768: 100,
+        568: 50,
+      },
+    })
+
+    console.log(instance)
+  </script>
+
+</body>
+</html>
