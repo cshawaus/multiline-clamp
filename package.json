@@ -7,8 +7,8 @@
     "build": "NODE_ENV=production npx webpack",
     "watch": "npx webpack --env.dev --watch --info-verbosity verbose --devtool eval --output-path='./bin'",
     "clean": "rm -rf dist && mkdir dist",
-    "dist": "npm run clean && npm run build-all",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dist": "npm run clean && npm run build",
+    "test": "npm run build"
   },
   "repository": {
     "type": "git",
