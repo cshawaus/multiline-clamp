@@ -1,6 +1,7 @@
 # Multiline Clamp
 
 [![license][license]][license-url]
+[![fossa][fossa]][fossa-url]
 [![gzipped size][gzip]](#no-link)
 [![dev deps][dev-deps]][dev-deps-url]
 [![build status][travis]][travis-url]
@@ -147,6 +148,9 @@ MIT
 
 [license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=rounded
 [license-url]: https://github.com/cshawaus/multiline-clamp/blob/master/LICENSE
+
+[fossa]: https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=shield
+[fossa-url]: https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_shield
 
 [travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
 [travis-url]: https://travis-ci.org/cshawaus/multiline-clamp
