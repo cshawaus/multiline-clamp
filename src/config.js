@@ -16,6 +16,12 @@ const defaultOptions = {
   clampSize: 72,
 
   /**
+   * Defines how partial/invalid tags are handled when found in a clamped string.
+   * @type {String}
+   */
+  partialTags: 'complete',
+
+  /**
    * Allows an object of clamps to be defined for different breakpoints.
    * @type {Boolean|Object}
    */

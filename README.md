@@ -1,11 +1,14 @@
 # Multiline Clamp
 
 [![license][license]][license-url]
+[![fossa][fossa]][fossa-url]
 [![gzipped size][gzip]](#no-link)
 [![dev deps][dev-deps]][dev-deps-url]
 [![build status][travis]][travis-url]
 [![npm][npm]][npm-url]
 [![jsDelivr][jsdelivr]][jsdelivr-url]
+
+_An lightweight and performance-minded library that minipulates DOM content in a respectful and transparent manor._
 
 Even in the modern age of browsers, technologies and API's alike; we still don't have a full-proof method that enables a designers vision when they show off some cool multiline text with an ellipsis at the end. I needed a solution for a project that not only allowed me to clamp text over multiple lines but also over multiple breakpoints too.
 
@@ -68,6 +71,13 @@ Getting set up is quick and simple, simply define the element you wish to clamp 
 new MultilineClamp(document.querySelector('p'))
 ```
 
+### Bind to a `NodeList`
+There may also come a time when you need to bind a clamp to many targets, this can be accomplished by passing a collection to the constructor.
+
+```js
+new MultilineClamp(document.querySelectorAll('p'))
+```
+
 ### Responsive
 You can also define per breakpoint clamps for any resolution you choose. This can be done by setting the `responsive` property which accepts an object.
 
@@ -92,16 +102,16 @@ new MultilineClamp(document.querySelector('p'), {
   <tr>
     <th><code>target</code></th>
     <td>
-      Type: <code>element</code><br>
-      Required: <code>yes</code><br><br>
+      Type: <code>Element</code>, <code>NodeList</code><br>
+      Required: <code>Yes</code><br><br>
     </td>
   </tr>
   <tr>
     <th><code>options</code></th>
     <td>
-      Type: <code>object</code><br>
+      Type: <code>Object</code><br>
       Default: <code>{}</code><br>
-      Required: <code>no</code><br><br>
+      Required: <code>No</code><br><br>
       Please see the <a href="#options">options</a> list below for a complete list.
     </td>
   </tr>
@@ -119,6 +129,15 @@ A string or element that is appended after the clamped content. When using an el
 
 The number of characters that should appear before the ellipsis.
 
+### `partialTags`
+`string`, defaults to `complete`.
+
+Defines how partial/invalid tags are handled when found in a clamped string. Valid values are:
+
+- `complete` — Completes the partial tag by restoring the closing end of the tag _(only works for partial closing tags)_
+- `pull` — Pulls the clamp back to just before the tag, this strips all content within it
+- `pull-and-retain` — Removes the tag but retains any content that was within it
+
 ### `responsive`
 `boolean | { [number]: number }`, defaults to `false`.
 
@@ -134,6 +153,16 @@ Regular expression for matching certain tags within the content.
 
 Defines whether the whitespace before/after the content should be stripped out. `false` disables this functionality, setting a regular expression allows more finite control over how the spaces are handled.
 
+## Performance
+
+I am constantly trying new ways to improve the performance of _Multiline Clamp_ through the use of modern API's but it's not possible to promise your result will match mine. Through my testing in Google Chrome and Firefox, performance exceeds my expectations with a respectful amount of elements on the page.
+
+If you have ideas for improving my implementation feel free to make a pull request.
+
+## Todo
+
+* _Ignore tags in the clamping process_, this will ensure the correct clamp size is maintained instead of counting tags which can increase/decrease the amount of content left
+
 ## Resources
 
 * [Changelog](https://github.com/cshawaus/multiline-clamp/blob/master/CHANGELOG.md)
@@ -147,6 +176,9 @@ MIT
 
 [license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=rounded
 [license-url]: https://github.com/cshawaus/multiline-clamp/blob/master/LICENSE
+
+[fossa]: https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp.svg?type=shield
+[fossa-url]: https://app.fossa.io/projects/git%2Bgithub.com%2Fcshawaus%2Fmultiline-clamp?ref=badge_shield
 
 [travis]: https://api.travis-ci.org/cshawaus/multiline-clamp.svg
 [travis-url]: https://travis-ci.org/cshawaus/multiline-clamp

@@ -10,37 +10,38 @@ import {
  * @class MultilineClamp
  */
 class MultilineClamp {
-  tags = []
+  storeClampElement = null
 
   /**
    * Constructor for the `MultilineClamp` class.
    *
-   * @param {HTMLElement} target  An target element to apply a clamp to
-   * @param {Object}      options Option overrides
+   * @param {HTMLElement|NodeList} targets Target elements to apply a clamp to
+   * @param {Object}               options Option overrides
    */
-  constructor(target, options = {}) {
+  constructor(targets, options = {}) {
     const extendedOptions = mergeDefaultOptionsWithCustomOverrides(options)
+
+    // Bind the options to the instance
     this.options = extendedOptions
 
-    // Define the target element and original content
-    this.target = target
-    this.originalContent = target.innerHTML
+    // Define the target elements
+    this.targets = targets instanceof window.NodeList ? [...targets] : [targets]
 
-    // Get the target contents
-    const content = this.targetContents
+    // Set up each target
+    this.targets.forEach((target) => {
+      // Get the original content for the target
+      if (!target.originalContent) {
+        target.originalContent = this.getTargetContents(target)
+      }
 
-    // Store the original text in memory (non-persistent between page reloads)
-    if (!target.originalContent) {
-      target.originalContent = content
-    }
+      // Match all the tags in the target elements content
+      if (extendedOptions.tagsExpression instanceof window.RegExp) {
+        target.tags = target.originalContent.match(extendedOptions.tagsExpression) || []
+      }
 
-    // Match all the tags in the target elements content
-    if (extendedOptions.tagsExpression instanceof window.RegExp) {
-      this.tags = content.match(extendedOptions.tagsExpression)
-    }
-
-    // Start clamp'n!
-    this.clamp()
+      // Start clamp'n!
+      this.clamp(target)
+    })
 
     // Register this instance with the resize handler
     registerInstanceWithResizeHandler(this)
@@ -50,10 +51,11 @@ class MultilineClamp {
    * Retrieves the contents of the target element and applies any triming to it.
    *
    * @memberof MultilineClamp
-   * @return {String}
+   * @param  {HTMLElement} target A target element to get content for
+   * @return {String}             The parsed contents for the target
    */
-  get targetContents() {
-    let html = this.target.innerHTML
+  getTargetContents(target) {
+    let html = target.innerHTML
     const { trimWhitespace } = this.options
 
     if (trimWhitespace) {
@@ -71,9 +73,11 @@ class MultilineClamp {
    * Takes the stored content string and removes part of it until the clamp size is reached.
    *
    * @memberof MultilineClamp
+   * @param {HTMLElement} target Target element to apply a clamp to
    */
-  clamp() {
-    const { characterLength, originalContent, target } = this
+  clamp(target) {
+    const { characterLength } = this
+    const { originalContent } = target
     let content = originalContent
 
     // If the length of the content doesn't exceed the clamp size simply do nothing!
@@ -84,7 +88,7 @@ class MultilineClamp {
 
     // Let's check all of the tags we have, if any are missing or cut off we need to take
     // the string back to the point where the opening tag begins.
-    const foundTags = this.findTagsInContent()
+    const foundTags = this.findTagsInContent(target)
 
     // If tags are found, clamp the string from the point which a valid tag exists at
     if (foundTags.length) {
@@ -114,14 +118,22 @@ class MultilineClamp {
   }
 
   /**
+   * Re-applies the clamp to each target defined.
+   */
+  refreshClamp() {
+    this.targets.forEach(target => this.clamp(target))
+  }
+
+  /**
    * Strips away the content up until the point a tag can't be found in the string.
    *
    * @memberof MultilineClamp
-   * @return {Array} Tags that were found in the substring content
+   * @param  {HTMLElement} target Target element to apply a clamp to
+   * @return {Array}              Tags that were found in the substring content
    */
-  findTagsInContent() {
+  findTagsInContent(target) {
     const foundTags = []
-    const { originalContent, tags } = this
+    const { originalContent, tags } = target
 
     let contentClone = originalContent
     let contentOffset = 0
@@ -138,7 +150,7 @@ class MultilineClamp {
         // Push the tag into the list
         foundTags.push({
           closing : tag.indexOf('</') !== -1,
-          name    : tag,
+          element : tag,
           offset  : contentOffset + offset,
         })
       }
@@ -157,72 +169,94 @@ class MultilineClamp {
    * @return {String}           Modified content up until the point of the last found tag
    */
   clampFromKnownTags(foundTags, content) {
-    let clampOffset = content.length
-    let lastFound = false
+    const { partialTags } = this.options
+    let newContent = content
 
     foundTags.forEach((tag, index) => {
-      if (lastFound) return
+      const tagLength = tag.element.length
+      const tagFromContent = content.substr(tag.offset, tagLength)
 
-      const tagLength = tag.name.length
-      const contentOffset = content.substr(tag.offset, tagLength)
+      if (tagLength !== tagFromContent.length) {
+        const lastTag = foundTags[index - 1]
 
-      if (tagLength !== contentOffset.length) {
-        // Pull the content back to before the previous tag
-        if (tag.closing) {
-          const lastTag = foundTags[index - 1]
-          lastFound = true
+        switch (partialTags) {
+          case 'pull':
+            // Simply pull the content back to just before the previous tag
+            newContent = newContent.substring(0, lastTag.offset)
+            break
 
-          clampOffset = lastTag.offset
+          case 'pull-and-retain':
+            if (tag.closing) {
+              newContent = newContent.substring(0, tag.offset)
 
-        // Otherwise pull the content back to just before this tag
-        } else {
-          clampOffset = tag.offset
+              // Grab the last bit of content before the previous tag
+              const contentEnd = newContent.substr(lastTag.offset + lastTag.element.length)
+
+              // Now remove the previous tag from the content and append the original ending back on
+              newContent = newContent.substring(0, lastTag.offset) + contentEnd
+            }
+            break
+
+          case 'complete':
+          default:
+            if (tag.closing) {
+              // Fixes the incomplete tag by replacing it with the original element
+              newContent = newContent.substring(0, tag.offset) + tag.element
+            }
+            break
         }
       }
     })
 
-    return content.substring(0, clampOffset)
+    return newContent
   }
 
   /**
-   * Returns the clamp size for the current breakpoint, if responsive clamps aren't enabled the
-   * default clamp size is used instead.
+   * Returns the clamp size for the current breakpoint. If responsive clamps aren't enabled
+   * the default clamp size is used instead.
    *
    * @memberof MultilineClamp
-   * @return {Number}
+   * @return {Number} The clamp size to contain the content to
    */
   get characterLength() {
-    const { responsive } = this.options
+    const { clampSize, responsive } = this.options
     const windowWidth = window.innerWidth
 
-    let clampSize
+    let size
     if (responsive instanceof window.Object) {
       Object.keys(responsive).forEach((breakpoint) => {
-        if (windowWidth <= breakpoint && !clampSize) {
-          clampSize = responsive[breakpoint]
+        if (windowWidth <= breakpoint && !size) {
+          size = responsive[breakpoint]
         }
       })
     }
 
-    return clampSize || this.options.clampSize
+    return size || clampSize
   }
 
   /**
    * Builds the clamp element that is appended to the end of the content.
    *
    * @memberof MultilineClamp
-   * @return {HTMLElement}
+   * @return {HTMLElement} The DOM element for the clamp
    */
   get clampElement() {
+    // If the clamp already exists, use the stored version and clone it
+    if (this.storedClampElement) {
+      return this.storedClampElement.cloneNode(true)
+    }
+
     const { clamp } = this.options
+    let clampElement = clamp
 
-    // If the clamp element is already an `HTMLElement`, simply return it
-    if (clamp instanceof window.HTMLElement) return clamp
+    // Create a new `span` element to wrap the clamp text within if the given element is a string
+    if (!(clampElement instanceof window.HTMLElement)) {
+      clampElement = document.createElement('span')
+      clampElement.appendChild(document.createTextNode(clamp))
+    }
 
-    // Create a new `span` element to wrap the clamp text within
-    const clampElement = document.createElement('span')
-    clampElement.appendChild(document.createTextNode(clamp))
-
+    // Cache the element away so we don't have to re-generate it again
+    this.storedClampElement = clampElement
     return clampElement
   }
 }

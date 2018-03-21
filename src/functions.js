@@ -26,7 +26,7 @@ function bindResizeHandler() {
 
     // Start timing for event 'completion'
     resizeTimeout = setTimeout(() => {
-      multilineInstances.forEach(instance => instance.clamp())
+      multilineInstances.forEach(instance => instance.refreshClamp())
     }, 100)
   })
 }
@@ -79,6 +79,14 @@ export function mergeDefaultOptionsWithCustomOverrides(overrides) {
   // Clamp size for all devices
   if (overrides.clampSize && !Number.isNaN(overrides.clampSize)) {
     defaults.clampSize = overrides.clampSize
+  }
+
+  // Partial tags
+  if (
+    typeof overrides.partialTags === 'string' &&
+    /^complete|pull|pull-and-retain$/.test(overrides.partialTags)
+  ) {
+    defaults.partialTags = overrides.partialTags
   }
 
   // Responsive behaviours
