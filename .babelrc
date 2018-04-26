@@ -8,6 +8,7 @@
       "useBuiltIns": "entry"
     }],
     ["@babel/preset-stage-0", {
+      "decoratorsLegacy": true,
       "loose": true,
       "useBuiltIns": true
     }]
