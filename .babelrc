@@ -10,6 +10,7 @@
     ["@babel/preset-stage-0", {
       "decoratorsLegacy": true,
       "loose": true,
+      "pipelineProposal": true,
       "useBuiltIns": true
     }]
   ]
