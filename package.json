@@ -1,11 +1,11 @@
 {
   "name": "multiline-clamp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Enables text on a website to be truncated over multiple lines which is not widely supported in CSS natively.",
   "main": "./src/index.js",
   "scripts": {
-    "build": "NODE_ENV=production npx webpack",
-    "watch": "npx webpack --env.dev --watch --info-verbosity verbose --devtool eval --output-path='./bin'",
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack",
+    "watch": "./node_modules/.bin/webpack --env.dev --watch --info-verbosity verbose --devtool eval --output-path='./bin'",
     "clean": "rm -rf dist && mkdir dist",
     "dist": "npm run clean && npm run build",
     "test": "npm run build"
@@ -28,19 +28,22 @@
   },
   "homepage": "https://github.com/cshawaus/multiline-clamp",
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.42",
-    "@babel/core": "^7.0.0-beta.42",
-    "@babel/preset-env": "^7.0.0-beta.42",
-    "@babel/preset-stage-0": "^7.0.0-beta.42",
-    "babel-eslint": "^8.2.2",
+    "@babel/cli": "^7.0.0-beta.54",
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/preset-stage-0": "^7.0.0-beta.54",
+    "babel-eslint": "^8.2.6",
     "babel-loader": "^8.0.0-beta.2",
-    "eslint": "^4.19.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-babel": "^4.1.2",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "eslint": "^5.1.0",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "peerDependencies": {
+    "eslint": "^5.1.0"
   }
 }
