@@ -1,5 +1,5 @@
 /*!
- * multiline-clamp v1.3.0
+ * multiline-clamp v1.4.0
  * © 2018 by Chris Shaw
  */
 (function webpackUniversalModuleDefinition(root, factory) {
