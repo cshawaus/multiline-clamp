@@ -3,13 +3,14 @@ const webpack = require('webpack')
 
 const packageOptions = require('./package.json')
 
+const packageAuthor = packageOptions.author
 const packageName = packageOptions.name
 
-function generateConfiguration(name) {
+function generateConfiguration(name, mode = 'development') {
   return {
     devtool : 'source-map',
     entry   : packageOptions.main,
-    mode    : name.indexOf('min') !== -1 ? 'production' : 'development',
+    mode,
 
     output: {
       filename          : `${name}.js`,
@@ -34,10 +35,10 @@ function generateConfiguration(name) {
 
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.NODE_ENV': JSON.stringify('production'),
       }),
       new webpack.BannerPlugin({
-        banner    : `${packageName} v${packageOptions.version}\n© ${(new Date()).getFullYear()} by Chris Shaw`,
+        banner    : `${packageName} v${packageOptions.version}\n© ${(new Date()).getFullYear()} by ${packageAuthor.name}`,
         entryOnly : true,
       }),
     ],
@@ -51,6 +52,6 @@ module.exports = (env) => {
 
   return [
     generateConfiguration(packageName),
-    generateConfiguration(`${packageName}.min`),
+    generateConfiguration(`${packageName}.min`, 'production'),
   ]
 }
